@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<project name="PAY-AMS" default="runnableJar" basedir="."> 
+	<!-- 版本号 -->
+	<property name="version" value="1.0"/>
+	<property name="projectName" value="payease-activemq-monitor-${version}"/>
+	<!-- classpath -->
+	<property name="jar.class.path" 
+		value="lib/activemq-all-5.10.1.jar lib/log4j-1.2.17.jar lib/mail.jar lib/payment.jar "></property>
+	
+	<!-- 拷贝文件 -->
+	<target name="copy">
+		<copy todir="${projectName}/bin">
+			<fileset dir="./command">
+				<exclude name="mqm.sh"/>
+			</fileset>	
+		</copy>
+		<copy todir="${projectName}">
+			<fileset dir="./command">
+				<include name="mqm.sh"/>
+			</fileset>	
+		</copy>
+		<copy todir="${projectName}/lib">
+			<fileset dir="./lib">
+				<include name="*.jar"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<!-- 生成测试Jar -->
+	<target name="testJar" depends="copy">
+			<tstamp>  
+	            <format property="buildTime" pattern="yyyy/MM/dd hh:mm" />  
+	        </tstamp>
+		    <jar destfile="${projectName}/mqmTest.jar" basedir="bin">
+		        <manifest>
+		            <attribute name="Main-Class" value="net.payease.monitor.Main"/>
+		        	<attribute name="Class-Path" value="${jar.class.path}"/>
+		        	<attribute name="Build-Time" value="${buildTime}" /> 
+		        	<attribute name="version" value="${version}" /> 
+		        </manifest>
+		    </jar>
+	</target>
+	
+	<!-- 生成Jar -->
+	<target name="runnableJar" depends="testJar">
+		<tstamp>  
+            <format property="buildTime" pattern="yyyy/MM/dd hh:mm" />  
+        </tstamp>
+	    <jar destfile="${projectName}/mqm.jar" basedir="bin">
+	        <manifest>
+	            <attribute name="Main-Class" value="net.payease.monitor.Main"/>
+	        	<attribute name="Class-Path" value="${jar.class.path}"/>
+	        	<attribute name="Build-Time" value="${buildTime}" /> 
+	        	<attribute name="version" value="${version}" /> 
+	        </manifest>
+	    </jar>
+	</target>
+	
+</project>
